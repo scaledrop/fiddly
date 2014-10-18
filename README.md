@@ -1,7 +1,7 @@
 Fiddly
 ========
 
-Online code-edior, Fiddly is a playground for web developers. 
+Online code-runner. Fiddly is a playground for web developers. 
 
 ## Features
 * Provides ability to run offline
