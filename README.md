@@ -10,15 +10,15 @@ Online code-runner. Fiddly is a playground for web developers.
 * Keyboard shortcuts
 
 ## Demo
-* [fiddly](http://scaledrop.com/run)
+* See it in action. [fiddly](http://scaledrop.com/run)
 
 ## Usage
 Run your HTML, CSS and Javascript at one place. If you want, download the github repo and make it work offline.
 
 ## Keyboard Shortcuts
 #### Mac and Unix
-* <strong>Run</strong> <code>ctrl</code>+<code>r</code>
-* <strong>Reset</strong> <code>ctrl</code>+<code>w</code>
+* <strong>Run</strong> <code>CTRL</code>+<code>R</code>
+* <strong>Reset</strong> <code>CTRL</code>+<code>W</code>
 
 #### Windows and Linux
 * Coming soon.
