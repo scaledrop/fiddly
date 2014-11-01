@@ -1,238 +1,283 @@
 <!doctype html>
 <html>
+
 <head>
     <title>Fiddly: Online HTML, CSS and JS runner</title>
-<style>
-
-* {
-    margin: 0;
-    padding: 0;
-    outline: 0;
-}
-body {
-    font-family: monospace;
-    background: #fff;
-}
-.wrapper {
-    background: #f5f5f5;
-    border: 0;
-}
-.half {
-    width: 50%;
-    float: left;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-.wrapper.half {
-    padding: 30px 60px 30px 40px;
-}
-.wrapper.half h2 {
-    color: #666
-}
-.wrapper textarea {
-    width: 100%;
-    margin: 10px auto 20px auto;
-    padding: 10px;
-    min-height: 150px;
-    max-height: 400px;
-    border-color: #aaa;
-    resize: auto;
-    overflow: auto;
-    font-size: 14px;
-    font-family: monospace;
-    line-height: 1.6;
-    color: #666;
-    background: #fafafa;
-}
-.wrapper textarea:focus {
-    background: #fff
-}
-#output.half {
-    padding: 0
-}
-.output {
-    overflow: hidden;
-}
-#rh {
-    position: absolute;
-    top: 52px;
-    right: 0;
-    bottom: 0;
-    width: 50%;
-    height: 100%;
-}
-.top-controls{
-    padding: 10px;
-}
-#runBtn, #resetBtn {
-    padding: 7px 25px;
-    font-size: 14px;
-    border: 0;
-    text-transform: uppercase;
-}
-#runBtn{
-    background: #666;
-    color: #fff;
-    float: left;
-}
-#resetBtn{
-    background: #eee;
-    color: #666;
-}
-#outframe {
-    border: none;
-    width: 100%;
-    height: 100%;
-}
-#outframe body {
-    padding: 0;
-    width: auto;
-}
-</style>
-<script>
-
-
-</script>
-</head>
-<body>
-<div class="wrapper half" id="lh">
-    <form>
-        <h2>HTML</h2>
-        <textarea id="html" placeholder="enter your markup here.." autofocus></textarea>
-        <h2>CSS</h2>
-        <textarea id="css" placeholder="put your style here.."></textarea>
-        <h2>JS</h2>
-        <textarea id="js" placeholder="add your script here.."></textarea>
-    </form>
-</div>
-<div class="output half" id="output">
-        <div class="top-controls">
-            <button id="runBtn">Run<span class="btnkeys"></span></button>
-            <button id="resetBtn">New<span class="btnkeys"></span></button>
-        </div>
-    <div id="rh">
-        <iframe id="outframe" sandbox="allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
-    </div>
-</div>
-<script>
-
-(function() 
-{
-    if (typeof addEventListener !== "undefined") {
-        addEvent = function(obj, evt, fn) {
-            obj.addEventListener(evt, fn, false);
-        };
-        removeEvent = function(obj, evt, fn) {
-            obj.removeEventListener(evt, fn, false);
-        };
-    } else if (typeof attachEvent !== "undefined") {
-        addEvent = function(obj, evt, fn) {
-            var fnHash = "e_" + evt + fn;
-            obj[fnHash] = function() {
-                var type = event.type, 
-                relatedTarget = null;
-                if (type === "mouseover" || type === "mouseout") {
-                    relatedTarget = (type === "mouseover") ? event.fromElement : event.toElement;
-                }
-                fn.call(obj, {
-                    target: event.srcElement,
-                    type: type,
-                    relatedTarget: relatedTarget,
-                    _event: event,
-                    preventDefault: function() {
-                        this._event.returnValue = false;
-                    },
-                    stopPropagation: function() {
-                        this._event.cancelBubble = true;
-                    }
-                });
-            };
-            obj.attachEvent("on" + evt, obj[fnHash]);
-        };
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        outline: 0;
     }
-    var d = document, getId = function(id) {
-        return d.getElementById(id);
-    };
-    var run = getId("runBtn"), reset = getId("resetBtn"), hc = getId("html"), cc = getId("css"), jc = getId("js"), fc = getId("outframe");
-    var createEl = function(name) { return d.createElement(name);};
-    var outst = createEl("style"), outjs = createEl("script");
-    outjs.type = 'text/javascript';
-    
-    var output = {
-        isFrame: function() {
-            var outdoc = fc.contentDocument || fc.contentWindow.d;
+    body {
+        font-family: monospace;
+        background: #fff;
+    }
+    .wrapper {
+        background: #f5f5f5;
+        border: 0;
+    }
+    .half {
+        width: 50%;
+        float: left;
+        -webkit-box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        box-sizing: border-box;
+    }
+    .wrapper.half {
+        padding: 30px 60px 30px 40px;
+    }
+    .wrapper.half h2 {
+        color: #666
+    }
+    .wrapper textarea {
+        width: 100%;
+        margin: 10px auto 20px auto;
+        padding: 10px;
+        min-height: 150px;
+        max-height: 400px;
+        border-color: #aaa;
+        resize: auto;
+        overflow: auto;
+        font-size: 14px;
+        font-family: monospace;
+        line-height: 1.6;
+        color: #666;
+        background: #fafafa;
+    }
+    .wrapper textarea:focus {
+        background: #fff
+    }
+    #output.half {
+        padding: 0
+    }
+    .output {
+        overflow: hidden;
+    }
+    #rh {
+        position: absolute;
+        top: 52px;
+        right: 0;
+        bottom: 0;
+        width: 50%;
+        height: 100%;
+    }
+    .top-controls {
+        padding: 10px;
+    }
+    #runBtn,
+    #resetBtn,
+    #saveBtn {
+        padding: 7px 25px;
+        font-size: 14px;
+        border: 0;
+        text-transform: uppercase;
+    }
+    #runBtn {
+        background: #666;
+        color: #fff;
+        float: left;
+    }
+    #resetBtn {
+        background: #eee;
+        color: #666;
+    }
+    #outframe {
+        border: none;
+        width: 100%;
+        height: 100%;
+    }
+    #outframe body {
+        padding: 0;
+        width: auto;
+    }
+    </style>
+    <script>
+    </script>
+</head>
+
+<body>
+    <div class="wrapper half" id="lh">
+        <form>
+            <h2>HTML</h2>
+            <textarea id="html" placeholder="enter your markup here.." autofocus></textarea>
+            <h2>CSS</h2>
+            <textarea id="css" placeholder="put your style here.."></textarea>
+            <h2>JS</h2>
+            <textarea id="js" placeholder="add your script here.."></textarea>
+        </form>
+    </div>
+    <div class="output half" id="output">
+        <div class="top-controls">
+            <button id="runBtn">Run
+                <span class="btnkeys"></span>
+            </button>
+            <button id="resetBtn">New
+                <span class="btnkeys"></span>
+            </button>
+            <button id="saveBtn">Save
+                <span class="btnkeys"></span>
+            </button>
+        </div>
+        <div id="rh">
+            <iframe id="outframe" sandbox="allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
+        </div>
+    </div>
+    <script>
+    (function() {
+        if (typeof addEventListener !== "undefined") {
+            addEvent = function(obj, evt, fn) {
+                obj.addEventListener(evt, fn, false);
+            };
+            removeEvent = function(obj, evt, fn) {
+                obj.removeEventListener(evt, fn, false);
+            };
+        } else if (typeof attachEvent !== "undefined") {
+            addEvent = function(obj, evt, fn) {
+                var fnHash = "e_" + evt + fn;
+                obj[fnHash] = function() {
+                    var type = event.type,
+                        relatedTarget = null;
+                    if (type === "mouseover" || type === "mouseout") {
+                        relatedTarget = (type === "mouseover") ? event.fromElement : event.toElement;
+                    }
+                    fn.call(obj, {
+                        target: event.srcElement,
+                        type: type,
+                        relatedTarget: relatedTarget,
+                        _event: event,
+                        preventDefault: function() {
+                            this._event.returnValue = false;
+                        },
+                        stopPropagation: function() {
+                            this._event.cancelBubble = true;
+                        }
+                    });
+                };
+                obj.attachEvent("on" + evt, obj[fnHash]);
+            };
+        }
+        var d = document,
+            getId = function(id) {
+                return d.getElementById(id);
+            };
+        var run = getId("runBtn"),
+            reset = getId("resetBtn"),
+            hc = getId("html"),
+            cc = getId("css"),
+            jc = getId("js"),
+            fc = getId("outframe"),
+            save = getId("saveBtn");
+        var createEl = function(name) {
+            return d.createElement(name);
+        };
+        var outst = createEl("style"),
+            outjs = createEl("script");
+        outjs.type = 'text/javascript';
+
+        var output = {
+            isFrame: function() {
+                var outdoc = fc.contentDocument || fc.contentWindow.d;
                 return outdoc;
-        },
-        elval: function(eh, ec, ej, est, ejs, edoc){
-            var hh = eh.value, ch = ec.value, jh = ej.value;
-            if (output.isFrame()) {
-                edoc.getElementsByTagName('head')[0].appendChild(est);
-                est.innerHTML = ch;
-                var iFrameBody = edoc.getElementsByTagName('body')[0];
+            },
+            elval: function(eh, ec, ej, est, ejs, edoc) {
+                var hh = eh.value,
+                    ch = ec.value,
+                    jh = ej.value;
+                if (output.isFrame()) {
+                    edoc.getElementsByTagName('head')[0].appendChild(est);
+                    est.innerHTML = ch;
+                    var iFrameBody = edoc.getElementsByTagName('body')[0];
                     iFrameBody.innerHTML = hh;
-                if (iFrameBody) {
-                    ejs.innerHTML = jh;
-                    iFrameBody.appendChild(ejs);
-                    edoc.location.href = "javascript:" + jh;
+                    if (iFrameBody) {
+                        ejs.innerHTML = jh;
+                        iFrameBody.appendChild(ejs);
+                        edoc.location.href = "javascript:" + jh;
+                    }
+                }
+            },
+            emval: function(eh, ec, ej, est, ejs, edoc) {
+                var hh = eh.value,
+                    ch = ec.value,
+                    jh = ej.value;
+                eh.value = ec.value = ej.value = est.innerHTML = edoc.body.innerHTML = "";
+                if (typeof(Storage) !== "undefined") {                                    
+                    localStorage.setItem("hc", "");
+                    localStorage.setItem("cc", "");
+                    localStorage.setItem("jc", "");
+                } else {
+                    alert("localStorage==undefined");
+                }
+                if (output.isFrame()) {
+                    var iFrameScript = edoc.getElementsByTagName('script')[0];
+                    if (iFrameScript) {
+                        iFrameScript.parentNode.removeChild(iFrameScript);
+                    }
+                    eh.focus();
                 }
             }
-        },
-        emval: function(eh, ec, ej, est, ejs, edoc){
-            var hh = eh.value, ch = ec.value, jh = ej.value;
-            eh.value = ec.value = ej.value = est.innerHTML = edoc.body.innerHTML = "";
-            if (output.isFrame()) {
-                var iFrameScript = edoc.getElementsByTagName('script')[0];
-                if (iFrameScript) {
-                    iFrameScript.parentNode.removeChild(iFrameScript);
+        };
+        var events = {
+            attachEvents: function() {
+                output.elval(hc, cc, jc, outst, outjs, output.isFrame());
+            },
+            dettachEvents: function() {
+                output.emval(hc, cc, jc, outst, outjs, output.isFrame());
+            }
+        };
+        var bindKey = {
+            bindMUKeys: function(e) {
+                var e = window.event || e
+                var keyunicode = e.charCode || e.keyCode
+                keyunicode === 18 ? events.attachEvents() : false; // ctrl+r
+                keyunicode === 23 ? events.dettachEvents() : false; // ctrl+w
+            },
+            bindWLKeys: function(e) {
+                var e = window.event || e
+                var keyunicode = e.charCode || e.keyCode
+                keyunicode === 10 ? events.attachEvents() : false;
+                keyunicode === 127 ? events.dettachEvents() : false;
+            }
+        };
+        var checkif = {
+            isOS: function(os) {
+                if (os.indexOf(("X11") || ("Mac")))
+                    return bindKey.bindMUKeys;
+                if (os.indexOf(("Win") || ("Linux")))
+                    return bindKey.bindWLKeys;
+            }
+        };
+        var saveFun = {
+            fileLocally: function() {
+                if (typeof(Storage) !== "undefined") {                                    
+                    localStorage.setItem("hc", hc.value);
+                    localStorage.setItem("cc", cc.value);
+                    localStorage.setItem("jc", jc.value);
+                } else {
+                    alert("localStorage==undefined");
                 }
-                eh.focus();
+            },
+            fileOnserver: function() {
+
+            },
+            getLocalData: function() {
+                if (typeof(Storage) !== "undefined") {
+                    hc.value = localStorage.getItem("hc");
+                    cc.value = localStorage.getItem("cc");
+                    jc.value = localStorage.getItem("jc");
+                }else {
+                    alert("localStorage==undefined");
+                }
             }
-        }
-    };
-    var events = {
-        attachEvents: function(){
-            output.elval(hc, cc, jc, outst, outjs, output.isFrame());
-        },
-        dettachEvents: function(){
-            output.emval(hc, cc, jc, outst, outjs, output.isFrame());
-        }
-    };
-    var bindKey = {
-        bindMUKeys: function(e) {
-            var e = window.event || e
-            var keyunicode = e.charCode || e.keyCode
-            keyunicode === 18 ? events.attachEvents() : false; // ctrl+r
-            keyunicode === 23 ? events.dettachEvents() : false; // ctrl+w
-        },
-        bindWLKeys: function(e) {
-            var e = window.event || e
-            var keyunicode = e.charCode || e.keyCode
-            keyunicode === 10 ? events.attachEvents() : false;
-            keyunicode === 127 ? events.dettachEvents() : false;
-        }
-    };
-    var checkif = {
-        isOS: function (os) {
-            if (os.indexOf(("X11") || ("Mac")))
-            return bindKey.bindMUKeys;
-            if (os.indexOf(("Win") || ("Linux")))
-                return bindKey.bindWLKeys;
-            }
-    };
-    addEvent(run, "click", events.attachEvents);
-    addEvent(reset, "click", events.dettachEvents);
-    addEvent(d, "keypress", checkif.isOS(navigator.appVersion));
-})();
-</script>
+
+        };
+        saveFun.getLocalData();
+        addEvent(run, "click", events.attachEvents);
+        addEvent(reset, "click", events.dettachEvents);
+        addEvent(save, "click", saveFun.fileLocally);
+        addEvent(d, "keypress", checkif.isOS(navigator.appVersion));
+    })();
+    </script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
-
