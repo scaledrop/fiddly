@@ -25,7 +25,7 @@
         box-sizing: border-box;
     }
     .wrapper.half {
-        padding: 30px 60px 30px 40px;
+        padding: 20px 60px 30px 40px;
     }
     .wrapper.half h2 {
         color: #666
@@ -63,24 +63,35 @@
         height: 100%;
     }
     .top-controls {
-        padding: 10px;
+        position: fixed;
+        top:0;
+        z-index: 10;
+        background: #fff;
+        width: 100%;
+        padding: 10px 0px 10px 10px;
     }
-    #runBtn,
-    #resetBtn,
-    #saveBtn {
-        padding: 7px 25px;
+    .sb{display: none}
+    .ctrls {
+        padding: 7px 0;
         font-size: 14px;
+        text-align: center;
+        width: 75px;
         border: 0;
         text-transform: uppercase;
     }
     #runBtn {
+        float: left;
         background: #666;
         color: #fff;
-        float: left;
     }
     #resetBtn {
         background: #eee;
         color: #666;
+    }
+    #saveBtn{
+        float: left;
+        background: #ccc;
+        color: #333;
     }
     #outframe {
         border: none;
@@ -91,6 +102,43 @@
         padding: 0;
         width: auto;
     }
+    @media screen and (max-width: 600px){
+        .wrapper textarea{margin: 10px auto}
+        .ctrls{
+            font-size: 12px;
+            width: 60px;
+        }
+    }
+      @media screen and (max-width: 500px){
+        .ctrls{
+            font-size: 14px;
+            width: 33.33%;
+        }
+        .half{
+            width: 100%;
+        }
+        #rh{
+            position: relative;
+            top:0;
+            margin-bottom: 30px;
+            width:100%;
+        }
+        .top-controls{
+            bottom: 0;
+            top: auto;
+            padding: 0px;
+            width: 100%;
+        }
+    }
+    @media screen and (max-height: 700px){
+        .wrapper textarea{min-height: 130px}
+    }
+    @media screen and (max-height: 600px){
+        .wrapper textarea{min-height: 110px}
+    }
+    @media screen and (max-height: 500px){
+        .wrapper textarea{min-height: 80px}
+    }
     </style>
     <script>
     </script>
@@ -100,7 +148,7 @@
     <div class="wrapper half" id="lh">
         <form>
             <h2>HTML</h2>
-            <textarea id="html" placeholder="enter your markup here.." autofocus></textarea>
+            <textarea id="html" placeholder="enter your markup here.." autofocus ></textarea>
             <h2>CSS</h2>
             <textarea id="css" placeholder="put your style here.."></textarea>
             <h2>JS</h2>
@@ -109,13 +157,13 @@
     </div>
     <div class="output half" id="output">
         <div class="top-controls">
-            <button id="runBtn">Run
+            <button class="ctrls" id="runBtn"><span class="lb">Run</span><span class="sb">R</span>
                 <span class="btnkeys"></span>
             </button>
-            <button id="resetBtn">New
+            <button class="ctrls" id="saveBtn"><span class="lb">Save</span><span class="sb">S</span>
                 <span class="btnkeys"></span>
             </button>
-            <button id="saveBtn">Save
+            <button class="ctrls" id="resetBtn"><span class="lb">Clear</span><span class="sb">C</span>
                 <span class="btnkeys"></span>
             </button>
         </div>
@@ -124,7 +172,7 @@
         </div>
     </div>
     <script>
-    (function() {
+    window.onload = function() {
         if (typeof addEventListener !== "undefined") {
             addEvent = function(obj, evt, fn) {
                 obj.addEventListener(evt, fn, false);
@@ -176,10 +224,12 @@
         outjs.type = 'text/javascript';
 
         var output = {
+            // check if iframe
             isFrame: function() {
                 var outdoc = fc.contentDocument || fc.contentWindow.d;
                 return outdoc;
             },
+            // run input code
             elval: function(eh, ec, ej, est, ejs, edoc) {
                 var hh = eh.value,
                     ch = ec.value,
@@ -196,17 +246,16 @@
                     }
                 }
             },
+            // clear output and inputs
             emval: function(eh, ec, ej, est, ejs, edoc) {
                 var hh = eh.value,
                     ch = ec.value,
                     jh = ej.value;
                 eh.value = ec.value = ej.value = est.innerHTML = edoc.body.innerHTML = "";
-                if (typeof(Storage) !== "undefined") {                                    
-                    localStorage.setItem("hc", "");
-                    localStorage.setItem("cc", "");
-                    localStorage.setItem("jc", "");
+                if (checkif.supportLocalStorage()) {                                    
+                    localStorage.clear();
                 } else {
-                    alert("localStorage==undefined");
+                    alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browsers");
                 }
                 if (output.isFrame()) {
                     var iFrameScript = edoc.getElementsByTagName('script')[0];
@@ -218,65 +267,82 @@
             }
         };
         var events = {
+            // bind events
             attachEvents: function() {
                 output.elval(hc, cc, jc, outst, outjs, output.isFrame());
             },
+            // unbind events
             dettachEvents: function() {
                 output.emval(hc, cc, jc, outst, outjs, output.isFrame());
             }
         };
         var bindKey = {
+            // shortcuts for mac and unix
             bindMUKeys: function(e) {
-                var e = window.event || e
-                var keyunicode = e.charCode || e.keyCode
+                var ev = window.event || e;
+                var keyunicode = ev.charCode || ev.keyCode;
                 keyunicode === 18 ? events.attachEvents() : false; // ctrl+r
                 keyunicode === 23 ? events.dettachEvents() : false; // ctrl+w
             },
+            // shortcuts for windows and linux
             bindWLKeys: function(e) {
-                var e = window.event || e
-                var keyunicode = e.charCode || e.keyCode
-                keyunicode === 10 ? events.attachEvents() : false;
-                keyunicode === 127 ? events.dettachEvents() : false;
+                var ev = window.event || e;
+                var keyunicode = ev.charCode || ev.keyCode;
+                keyunicode === 10 ? events.attachEvents() : false; // ctrl+return
+                keyunicode === 17 ? events.dettachEvents() : false; // ctrl+q
             }
         };
         var checkif = {
+            // test navigator
             isOS: function(os) {
-                if (os.indexOf(("X11") || ("Mac")))
+                // mac or unix
+                if (os.indexOf("X11") !=-1 || os.indexOf("Mac") !=-1) 
                     return bindKey.bindMUKeys;
-                if (os.indexOf(("Win") || ("Linux")))
+
+                // windows or linux
+                if (os.indexOf("Win") !=-1 || os.indexOf("Linux") !=-1) 
                     return bindKey.bindWLKeys;
+            },
+            supportLocalStorage: function() {
+                return typeof(Storage)!== 'undefined';
             }
         };
         var saveFun = {
+            // save using localstorage
             fileLocally: function() {
-                if (typeof(Storage) !== "undefined") {                                    
-                    localStorage.setItem("hc", hc.value);
-                    localStorage.setItem("cc", cc.value);
-                    localStorage.setItem("jc", jc.value);
+                if (checkif.supportLocalStorage()) {                                    
+                    if (hc.value) localStorage.setItem("hc", hc.value);
+                    if (cc.value) localStorage.setItem("cc", cc.value);
+                    if (jc.value) localStorage.setItem("jc", jc.value);
+                    alert("Your code's been saved!");
                 } else {
-                    alert("localStorage==undefined");
+                    alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browsers");
                 }
             },
             fileOnserver: function() {
 
             },
             getLocalData: function() {
-                if (typeof(Storage) !== "undefined") {
-                    hc.value = localStorage.getItem("hc");
-                    cc.value = localStorage.getItem("cc");
-                    jc.value = localStorage.getItem("jc");
+                // hc.value = cc.value = jc.value = "";
+                if (checkif.supportLocalStorage()) {
+                    // Note: below lines'll stop you to run the whole code if you're using this locally on IE and old Firefox. IE hates it if you try to access localstorage on local file ie- file://
+                    // Bug Ref: https://bugzilla.mozilla.org/show_bug.cgi?id=507361
+                    // Fix: start your local server
+                    if (localStorage.getItem("hc")) hc.value = localStorage.getItem("hc");
+                    if (localStorage.getItem("cc")) cc.value = localStorage.getItem("cc");
+                    if (localStorage.getItem("jc")) jc.value = localStorage.getItem("jc");
                 }else {
-                    alert("localStorage==undefined");
+                    alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browsers");
                 }
             }
-
         };
+        // trigger events
         saveFun.getLocalData();
         addEvent(run, "click", events.attachEvents);
         addEvent(reset, "click", events.dettachEvents);
-        addEvent(save, "click", saveFun.fileLocally);
+        addEvent(save, "click", function(){ saveFun.fileLocally(); events.attachEvents();});
         addEvent(d, "keypress", checkif.isOS(navigator.appVersion));
-    })();
+    };
     </script>
 </body>
 

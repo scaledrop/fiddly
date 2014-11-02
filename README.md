@@ -18,10 +18,11 @@ Run your HTML, CSS and Javascript at one place. If you want, download the github
 ## Keyboard Shortcuts
 #### Mac and Unix
 * <strong>Run</strong> <code>CTRL</code>+<code>R</code>
-* <strong>Reset</strong> <code>CTRL</code>+<code>W</code>
+* <strong>Clear</strong> <code>CTRL</code>+<code>W</code>
 
 #### Windows and Linux
-* Coming soon.
+* <strong>Run</strong> <code>CTRL</code>+<code>Enter</code>
+* <strong>Clear</strong> <code>CTRL</code>+<code>Q</code>
 
 ###License
 Releasing under the MIT License.
