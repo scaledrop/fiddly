@@ -1,7 +1,7 @@
 Fiddly
 ========
 
-Online code-runner. Fiddly is a playground for web developers and designers. 
+Test your Javascript, CSS and HTML online with Fiddly code editor. Fiddly is a playground for web developers and designers or even beginners.
 
 ## Features
 * Provides ability to run offline
