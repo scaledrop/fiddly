@@ -10,7 +10,7 @@ Test your Javascript, CSS and HTML online with Fiddly code editor. Fiddly is a p
 * Keyboard shortcuts
 
 ## Demo
-* See it in action. [fiddly](http://scaledrop.com)
+* See it in action [here](http://scaledrop.com).
 
 ## Usage
 Run your HTML, CSS and Javascript at one place. If you want, download the github repo and make it work offline.
