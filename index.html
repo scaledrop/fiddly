@@ -1,8 +1,12 @@
+
 <!doctype html>
 <html>
 
 <head>
+	<meta charset="UTF-8">
     <title>Fiddly: Online HTML, CSS and JS runner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" itemprop="description" content="Test your Javascript, CSS and HTML online with Fiddly code editor. Fiddly is a playground for web developers and designers or even beginners.">
     <style>
     * {
         margin: 0;
@@ -154,6 +158,9 @@
             <h2>JS</h2>
             <textarea id="js" placeholder="add your script here.."></textarea>
         </form>
+        <div class="bottomHelp">
+            
+        </div>
     </div>
     <div class="output half" id="output">
         <div class="top-controls">
@@ -208,6 +215,14 @@
         var d = document,
             getId = function(id) {
                 return d.getElementById(id);
+            },
+            // localStorage = {},
+            fetch = function(str) {
+            	// if(checkif.supportLocalStorage())
+            	return localStorage.getItem(str);
+            },
+            set = function(str, arg) {
+            	return localStorage.setItem(str, arg);
             };
         var run = getId("runBtn"),
             reset = getId("resetBtn"),
@@ -255,7 +270,7 @@
                 if (checkif.supportLocalStorage()) {                                    
                     localStorage.clear();
                 } else {
-                    alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browsers");
+                    alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browser.");
                 }
                 if (output.isFrame()) {
                     var iFrameScript = edoc.getElementsByTagName('script')[0];
@@ -280,16 +295,61 @@
             // shortcuts for mac and unix
             bindMUKeys: function(e) {
                 var ev = window.event || e;
-                var keyunicode = ev.charCode || ev.keyCode;
-                keyunicode === 18 ? events.attachEvents() : false; // ctrl+r
-                keyunicode === 23 ? events.dettachEvents() : false; // ctrl+w
+                var key = ev.charCode || ev.keyCode;
+                
+                switch (key) {
+                        case 13: // ctrl+return
+                            e.ctrlKey ? 
+                            events.attachEvents()
+                            : false;
+                            break;
+                        case 69: // ctrl+e
+                            e.ctrlKey ? 
+                            events.dettachEvents()
+                            : false;
+                            break;
+                        case 83: // ctrl+s
+                            e.ctrlKey || e.metaKey ?
+                            saveFun.fileLocally()
+                            : false;
+                            break;
+
+                        default:
+                            break;
+                    }
             },
             // shortcuts for windows and linux
             bindWLKeys: function(e) {
                 var ev = window.event || e;
-                var keyunicode = ev.charCode || ev.keyCode;
-                keyunicode === 10 ? events.attachEvents() : false; // ctrl+return
-                keyunicode === 17 ? events.dettachEvents() : false; // ctrl+q
+                var key = ev.charCode || ev.keyCode;
+
+	                switch (key) {
+				        case 13: // ctrl+return
+				        	e.ctrlKey ? 
+				            events.attachEvents()
+				            : false;
+				            break;
+				        case 69: // ctrl+e
+				        	e.ctrlKey ? 
+				        	(function(){
+				        		events.dettachEvents();
+				        		e.preventDefault();
+				        	})()
+				        	:
+				        	false;
+				        	break;
+				        case 83: // ctrl+s
+				        	e.ctrlKey || e.metaKey ?
+				        	(function() {
+				        		saveFun.fileLocally();
+				        		e.preventDefault();
+				        	})()
+					        :
+					        false;
+				            break;
+				        default:
+				            break;
+			    	}
             }
         };
         var checkif = {
@@ -311,12 +371,12 @@
             // save using localstorage
             fileLocally: function() {
                 if (checkif.supportLocalStorage()) {                                    
-                    if (hc.value) localStorage.setItem("hc", hc.value);
-                    if (cc.value) localStorage.setItem("cc", cc.value);
-                    if (jc.value) localStorage.setItem("jc", jc.value);
+                    if (hc.value) set("hc", hc.value);
+                    if (cc.value) set("cc", cc.value);
+                    if (jc.value) set("jc", jc.value);
                     alert("Your code's been saved!");
                 } else {
-                    alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browsers");
+                    alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browser.");
                 }
             },
             fileOnserver: function() {
@@ -328,11 +388,11 @@
                     // Note: below lines'll stop you to run the whole code if you're using this locally on IE and old Firefox. IE hates it if you try to access localstorage on local file ie- file://
                     // Bug Ref: https://bugzilla.mozilla.org/show_bug.cgi?id=507361
                     // Fix: start your local server
-                    if (localStorage.getItem("hc")) hc.value = localStorage.getItem("hc");
-                    if (localStorage.getItem("cc")) cc.value = localStorage.getItem("cc");
-                    if (localStorage.getItem("jc")) jc.value = localStorage.getItem("jc");
+                    fetch("hc") ? hc.value = localStorage.getItem("hc") : "";
+                    fetch("cc") ? cc.value = localStorage.getItem("cc") : "";
+                    fetch("jc") ? jc.value = localStorage.getItem("jc") : "";
                 }else {
-                    alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browsers");
+                    alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browser.");
                 }
             }
         };
@@ -340,8 +400,8 @@
         saveFun.getLocalData();
         addEvent(run, "click", events.attachEvents);
         addEvent(reset, "click", events.dettachEvents);
-        addEvent(save, "click", function(){ saveFun.fileLocally(); events.attachEvents();});
-        addEvent(d, "keypress", checkif.isOS(navigator.appVersion));
+        addEvent(save, "click", function(){ saveFun.fileLocally();});
+        addEvent(d, "keydown", checkif.isOS(navigator.appVersion));
     };
     </script>
 </body>
