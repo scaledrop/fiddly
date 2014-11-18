@@ -233,11 +233,11 @@
     <div class="wrapper half" id="lh">
         <form>
             <h2>HTML</h2>
-            <textarea id="html" class="c-block" placeholder="enter your markup here.." autofocus ></textarea>
+            <textarea id="html" class="codeBlock" placeholder="enter your markup here.." autofocus ></textarea>
             <h2>CSS</h2>
-            <textarea id="css" class="c-block" placeholder="put your style here.."></textarea>
+            <textarea id="css" class="codeBlock" placeholder="put your style here.."></textarea>
             <h2>JS</h2>
-            <textarea id="js" class="c-block" placeholder="add your script here.."></textarea>
+            <textarea id="js" class="codeBlock" placeholder="add your script here.."></textarea>
         </form>
         <div id="help" class="help">Help ?</div>
         <div class="info" id="info">
@@ -483,7 +483,8 @@
                     if (hc.value) set("hc", hc.value);
                     if (cc.value) set("cc", cc.value);
                     if (jc.value) set("jc", jc.value);
-                    if(hc.value || cc.value || jc.value) alert("Your code's been saved!");
+                    var min_val = hc.value || cc.value || jc.value ;
+                    if(min_val) alert("Your code's been saved!");
                 } else {
                     alert("Your browser doesn't support localStorage. Try either Chrome, Firefox or Safari browser.");
                 }
@@ -642,15 +643,18 @@
                 return startIn;
             },
             indent_: function(el) {
-                var self = this;
-                if (el.nodeName === 'TEXTAREA') {
-                    el.addEventListener('keydown', utilities.indentation);
+                var elem = document.querySelectorAll(el);
+                for (var i=0;i<elem.length;i+=1){
+                var self = elem[i];
+                    if (self.nodeName === 'TEXTAREA') {
+                        self.addEventListener('keydown', utilities.indentation);
+                    }
                 }
             }
 }
         // trigger events
         saveFun.getLocalData();
-        utilities.indent_(document.querySelector('.c-block'));
+        utilities.indent_('.codeBlock');
         addEvent(help, "click", function() {
             saveFun.triggerHelp.show(help, info, close)
         });
