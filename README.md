@@ -1,18 +1,18 @@
 Fiddly
 ========
 
-Test your Javascript, CSS and HTML online with Fiddly code editor. Fiddly is a playground for web developers and designers or even beginners.
+Test your Javascript, CSS and HTML online with Fiddly code editor. Fiddly is an ultra fast front-end playground for web developers and designers or even beginners.
 
 ## Features
-* Provides ability to run offline
-* No frameworks dependency
-* As its built upon pure javascript, so faster to execute code
-* Keyboard shortcuts
+* You can make it work offline, no server-side dependency
+* No framework used
+* As its built upon pure javascript, so faster to execute
+* Keyboard shortcuts enabled
 
 ## Demo
 * See it in action [here](http://scaledrop.com).
 
-## Updates
+## Changelog v1.0
 * Added tab indentaion behaviour in editor.
 * Responsive layout
 
